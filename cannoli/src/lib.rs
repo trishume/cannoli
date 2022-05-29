@@ -198,7 +198,7 @@ fn parse_payload<T: Cannoli>(user: &T::Context, trace: &mut Vec<T::Trace>,
 /// Handle a newly connected client. This is run on a new thread each time a
 /// new TCP connection comes in.
 fn handle_client<T: Cannoli + 'static>(
-        stream: TcpStream, num_threads: usize, uid: u64) -> Result<()> {
+        stream: TcpStream, num_threads: usize, uid: u64, ppid: u64) -> Result<()> {
     /// Storage for the mini state-machine we use to sequence traces
     struct State<T: Cannoli + 'static> {
         /// Next sequence number we are looking for to report traces
@@ -228,7 +228,7 @@ fn handle_client<T: Cannoli + 'static>(
     let pipe = &pipe;
 
     // Create a new instance of the user's structure
-    let (user_type, user_ctxt) = T::init(uid);
+    let (user_type, user_ctxt) = T::init(uid, ppid);
     let user_ctxt = &user_ctxt;
 
     // Create the sequencing state machine
@@ -379,10 +379,16 @@ pub fn create_cannoli<T: Cannoli + 'static>(threads: usize) -> Result<()> {
                     .expect("Failed to get uid for IPC");
                 let uid = u64::from_le_bytes(uid);
 
+                // Get the PPID for this connection
+                let mut ppid = [0u8; size_of::<u64>()];
+                stream.read_exact(&mut ppid)
+                    .expect("Failed to get uid for IPC");
+                let ppid = u64::from_le_bytes(ppid);
+
                 println!("New client {:#x}", uid);
 
                 // Handle the client
-                handle_client::<T>(stream, threads, uid)
+                handle_client::<T>(stream, threads, uid, ppid)
                     .expect("Failed to handle client");
 
                 println!("Lost client {:#x}", uid);
@@ -407,7 +413,7 @@ pub trait Cannoli: Send + Sync {
 
     /// Create a new `Self` for a new IPC session with `uid`. You probably
     /// don't need UID, so you can ignore it, but I provided it anyways.
-    fn init(uid: u64) -> (Self, Self::Context) where Self: Sized;
+    fn init(uid: u64, ppid: u64) -> (Self, Self::Context) where Self: Sized;
 
     /// Invoked when a PC execution opcode was lifted from the trace
     ///

@@ -16,7 +16,7 @@ impl Cannoli for Symbolizer {
     type Context = Vec<(u64, &'static str)>;
 
     /// Load the symbol table
-    fn init(_: u64) -> (Self, Self::Context) {
+    fn init(_: u64, _: u64) -> (Self, Self::Context) {
         // Symbols
         let mut symbols = Vec::new();
 

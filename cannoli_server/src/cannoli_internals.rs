@@ -59,6 +59,11 @@ impl Default for HookState {
         server.write_all(&pipe.uid().to_le_bytes())
             .expect("Cannoli: Failed to send UID to server");
 
+        // Send the ppid to the server
+        let ppid: u64 = unsafe { libc::getppid() as u64 };
+        server.write_all(&ppid.to_le_bytes())
+            .expect("Cannoli: Failed to send PPID to server");
+
         Self {
             active_buffer: None,
             _server: server,

@@ -53,7 +53,7 @@ impl Cannoli for Tracer {
     type Trace = Trace;
     type Context = ();
 
-    fn init(_: u64) -> (Self, Self::Context) {
+    fn init(_: u64, _: u64) -> (Self, Self::Context) {
         (Tracer {
         }, ())
     }
