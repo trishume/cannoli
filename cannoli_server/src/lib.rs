@@ -14,7 +14,7 @@ mod cannoli_internals;
 ///
 /// This may be called from multiple threads
 fn hook_inst(_pc: u64) -> bool {
-    true
+    false
 }
 
 /// Called when a memory access is being lifted in QEMU. Returning `true` will
