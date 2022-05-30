@@ -5,6 +5,8 @@ The `secrecy` binary is from DEF CON QUALS 2022. It uses self-modifying code to 
 The GDB and Cannoli script simply trace two different program locations that based on reversing should be paired.
 The GDB shows them paired as expected, but the Cannoli script misses one of the executions.
 
+The code that produced the binary is open-source post-CTF [here](https://github.com/Nautilus-Institute/quals-2022/blob/main/secrecy/secrecy.c).
+
 ## Output with gdb
 
 ```
