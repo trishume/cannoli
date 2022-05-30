@@ -37,7 +37,7 @@ impl Cannoli for Symbolizer {
     }
 
     fn exec(ctx: &Self::Context, pc: u64) -> Option<Self::Trace> {
-        // ctx.fetch_add(1, Ordering::SeqCst);
+        ctx.fetch_add(1, Ordering::SeqCst);
         if pc > BASE && pc < PROG_END && (pc == DEC_RET || pc == DEC_START) {
             Some(Trace::Instr(pc))
         } else {
@@ -64,7 +64,7 @@ impl Cannoli for Symbolizer {
                         decrypting = false;
                     }
                     // writeln!(&mut bw,"x{:x}", pc-BASE).unwrap();
-                    println!("x{:x}", pc-BASE);
+                    println!("0x{:x}", pc-BASE);
                 }
             }
         }
